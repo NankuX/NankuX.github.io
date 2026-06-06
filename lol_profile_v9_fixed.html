@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Perfil LoL editable</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --gold:#C89B3C;--gold-soft:#c89b3c20;
+  --bg:#090B10;--bg2:#10131B;--bg3:#171B25;--bg4:#212737;
+  --border:#2A2F3E;--border2:#3A4258;
+  --text:#EDEAE3;--text2:#A7A3AD;--text3:#676575;
+  --win:#4CAF72;--loss:#E24B4A;--blue:#4DA6FF;--purple:#9146FF;
+  --shadow:0 18px 55px #00000055;
+  --font-sans:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+body{min-height:100vh;background:radial-gradient(circle at top left,#1b2130 0,#090b10 36%,#07080c 100%);color:var(--text);font-family:var(--font-sans);padding:18px;}
+button,input,select{font:inherit;}
+button{border:none;}
+.page{max-width:1160px;margin:auto;display:grid;grid-template-columns:290px 1fr;gap:18px;}
+.sidebar,.card{background:linear-gradient(180deg,#151923,#10131B);border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow);}
+.sidebar-top{position:relative;padding:24px 18px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;border-bottom:1px solid var(--border);background:linear-gradient(145deg,#1d2330,#121620);}
+.cover-glow{position:absolute;inset:0;background:radial-gradient(circle at 50% -20%,#c89b3c45,transparent 45%);pointer-events:none;}
+.avatar-wrap{position:relative;z-index:1;}
+.avatar{width:98px;height:98px;border-radius:50%;border:3px solid var(--gold);background:#222736;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:34px;overflow:hidden;box-shadow:0 0 0 6px #c89b3c18;cursor:pointer;position:relative;transition:.18s;}
+.avatar:hover{transform:translateY(-1px);box-shadow:0 0 0 7px #c89b3c26,0 0 28px #c89b3c22;}
+.avatar::after{content:'Cambiar imagen';position:absolute;inset:auto 6px 7px;background:#000b;color:#fff;font-size:10px;font-weight:800;padding:4px 6px;border-radius:999px;opacity:0;transition:.18s;text-align:center;}
+.avatar:hover::after{opacity:1;}
+.avatar img{width:100%;height:100%;object-fit:cover;display:none;}
+.avatar.has-image i{display:none;}.avatar.has-image img{display:block;}
+.avatar-actions{display:none;}
+.mini-btn,.icon-btn{border:1px solid var(--border2);background:#1b2030;color:var(--text2);border-radius:10px;padding:6px 9px;cursor:pointer;transition:.18s;}
+.mini-btn:hover,.icon-btn:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-1px);}
+.pname{position:relative;z-index:1;font-size:21px;font-weight:700;letter-spacing:.01em;}
+.role-line{display:flex;gap:6px;align-items:center;position:relative;z-index:1;}
+.role-badge-pro,.role-badge-str{font-size:11px;font-weight:700;padding:3px 11px;border-radius:999px;}
+.role-badge-pro{background:#0D2040;color:var(--blue);border:1px solid #4DA6FF55;}.role-badge-str{background:#1A0D2E;color:var(--purple);border:1px solid #9146FF55;}
+.admin-chip{font-size:10px;padding:3px 9px;border-radius:999px;background:#1A1E28;border:1px solid #353C52;color:var(--text3);}
+.ssec{padding:14px;border-bottom:1px solid var(--border);}.ssec:last-child{border-bottom:none;}
+.slabel{font-size:10px;font-weight:800;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;}
+.social-list{display:flex;flex-direction:column;gap:7px;}.account-list{display:flex;flex-direction:column;gap:8px;}
+.social-row{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:46px;padding:8px 9px;border-radius:12px;border:1px solid var(--border);background:#1A1E28;color:inherit;transition:.18s;cursor:pointer;}
+.social-row:hover{border-color:var(--gold);background:#202638;transform:translateY(-1px);} .social-open{display:flex;align-items:center;gap:9px;text-decoration:none;color:inherit;min-width:0;flex:1;} .social-text{display:flex;flex-direction:column;min-width:0;line-height:1.15}.social-row .sname{display:block;font-size:12px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.social-row .shandle{display:block;font-size:10px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}.social-actions{display:flex;gap:5px;opacity:.9}.social-row:hover .social-actions{opacity:1;}
+.slogo{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:800;font-size:12px;overflow:hidden;}
+.sname{font-size:12px;color:var(--text);flex:1;font-weight:650;}.shandle{font-size:11px;color:var(--text3);max-width:82px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.add-social,.add-acc-btn,.ghost-btn{display:flex;align-items:center;justify-content:center;gap:7px;padding:10px;border-radius:12px;border:1px dashed var(--border2);background:#121722;color:var(--text3);cursor:pointer;font-size:12px;width:100%;transition:.18s;}
+.add-social:hover,.add-acc-btn:hover,.ghost-btn:hover{border-color:var(--gold);color:var(--gold);background:#1a1f2c;}
+.admin-lock{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--text3);padding:13px 14px;background:#0f1219;}
+.main{display:flex;flex-direction:column;gap:16px;}
+.hero{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:18px;border-radius:18px;background:linear-gradient(135deg,#161b26,#0f1219);border:1px solid var(--border);box-shadow:var(--shadow);}
+.hero h1{font-size:24px;margin-bottom:4px;}.hero p{color:var(--text2);font-size:13px;}.toolbar{display:flex;gap:8px;flex-wrap:wrap;}
+.primary-btn{background:linear-gradient(135deg,#C89B3C,#e4c46c);color:#15100a;border-radius:12px;padding:10px 13px;font-weight:800;cursor:pointer;box-shadow:0 10px 25px #c89b3c22;}
+.secondary-btn{background:#1A1E28;color:var(--text2);border:1px solid var(--border2);border-radius:12px;padding:10px 13px;cursor:pointer;font-weight:700;}
+.secondary-btn:hover{color:var(--gold);border-color:var(--gold);}
+.chead{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;background:#121722;}
+.chead-left{display:flex;align-items:center;gap:8px;}.cdot{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 14px var(--gold);}
+.acc-row{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;position:relative;transition:.18s;}
+.acc-row:last-child{border-bottom:none;}.acc-row:hover{background:#1A1E28;}.acc-row.active{background:#c89b3c12;outline:1px solid #c89b3c55;}
+.rank-img{width:52px;height:52px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 8px 12px #0008);}
+.rank-img-ph{width:52px;height:52px;border-radius:50%;background:#1A1E28;border:1.5px solid;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;}
+.ainfo{flex:1;min-width:0;}.aname{font-size:15px;font-weight:800;color:var(--text);}.arank{font-size:12px;font-weight:700;margin-top:3px;}.apills{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;}
+.pill{font-size:10px;padding:2px 8px;border-radius:999px;}.pw{background:#1A2E22;color:var(--win);}.pl{background:#2E1A1A;color:var(--loss);}.pm{background:#0D1F35;color:var(--blue);}.pn{background:#1A1E28;color:var(--text2);}
+.top-b{font-size:10px;padding:3px 8px;border-radius:999px;background:#C89B3C18;color:var(--gold);margin-left:auto;align-self:flex-start;white-space:nowrap;}
+.row-actions{display:flex;gap:5px;margin-left:auto;}.row-actions .icon-btn{padding:6px 7px;border-radius:9px;}
+.server-tag{font-size:10px;padding:2px 7px;border-radius:6px;background:#222736;color:var(--text3);border:1px solid var(--border2);margin-left:4px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}.champ-row,.grow{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--border);}.champ-row:last-child,.grow:last-child{border-bottom:none;}
+.cicon,.gicon{border-radius:8px;background:#222736;border:1px solid #353C52;overflow:hidden;flex-shrink:0;}.cicon{width:36px;height:36px;}.gicon{width:34px;height:34px;}.cicon img,.gicon img{width:100%;height:100%;object-fit:cover;}
+.cname,.gchamp{font-size:13px;font-weight:800;color:var(--text);}.cbar-wrap{height:4px;background:#222736;border-radius:4px;margin-top:5px;overflow:hidden;}.cbar-fill{height:4px;border-radius:4px;background:linear-gradient(90deg,var(--gold),#f1d77e);}.cwr{font-size:11px;color:var(--text2);white-space:nowrap;text-align:right;}.gbar{width:4px;align-self:stretch;border-radius:4px;flex-shrink:0;}.gmeta{font-size:10px;color:var(--text3);margin-top:2px;}.gkda{font-size:12px;font-weight:800;text-align:right;}.empty-live{padding:18px 16px;color:var(--text3);font-size:12px;line-height:1.45}.empty-live b{color:var(--text)}
+.modal{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:18px;z-index:20;}.modal.show{display:flex;}.modal-card{width:min(520px,100%);background:#11151e;border:1px solid var(--border2);border-radius:18px;box-shadow:0 25px 80px #000;overflow:hidden;}.modal-head{padding:15px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}.modal-title{font-weight:900;}.modal-body{padding:16px;display:grid;gap:11px;} .help-text{color:var(--text3);font-size:12px;line-height:1.45;} .opgg-actions{display:flex;gap:8px;flex-wrap:wrap;} .opgg-link{color:var(--gold);font-size:12px;text-decoration:none;} .sync-note{font-size:11px;color:var(--text3);}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}.field{display:grid;gap:5px;}.field.full{grid-column:1/-1;}label{font-size:11px;color:var(--text3);font-weight:800;text-transform:uppercase;letter-spacing:.06em;}input,select{width:100%;background:#1A1E28;color:var(--text);border:1px solid var(--border2);border-radius:11px;padding:10px;outline:none;}input:focus,select:focus{border-color:var(--gold);}.modal-foot{display:flex;gap:9px;justify-content:flex-end;padding:14px 16px;border-top:1px solid var(--border);}.danger-btn{background:#2E1A1A;color:#ff8585;border:1px solid #e24b4a66;border-radius:12px;padding:10px 13px;cursor:pointer;font-weight:800;margin-right:auto;}
+.toast{position:fixed;right:18px;bottom:18px;background:#10151f;border:1px solid #c89b3c55;color:var(--text);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow);display:none;z-index:30;font-size:13px;}.toast.show{display:block;}
+@media(max-width:850px){body{padding:10px}.page{grid-template-columns:1fr}.hero{align-items:flex-start;flex-direction:column}.two-col{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.row-actions{flex-direction:column}.shandle{max-width:120px}}
+</style>
+</head>
+<body>
+<div class="page" id="profileApp">
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="cover-glow"></div>
+      <div class="avatar-wrap">
+        <label class="avatar" id="avatarBox" for="avatarInput" title="Click para cambiar imagen"><img id="avatarImg" alt="Avatar"><i class="ti ti-user-circle" aria-hidden="true"></i></label>
+        <input id="avatarInput" type="file" accept="image/*" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" tabindex="-1">
+      </div>
+      <div class="pname" id="profileName">Nanku</div>
+      <div class="role-line"><span class="role-badge-pro">PRO</span><span class="admin-chip">⚙️ Admin</span></div>
+    </div>
+    <div class="ssec">
+      <div class="slabel"><span>Redes sociales</span></div>
+      <div class="social-list" id="socialList"></div>
+      <button class="add-social" id="addSocialBtn" type="button"><i class="ti ti-plus"></i> Agregar red social</button>
+    </div>
+    <div class="admin-lock"><i class="ti ti-lock"></i><span>Rol asignado por admin</span></div>
+  </aside>
+
+  <main class="main">
+    <section class="hero">
+      <div><h1>Perfil de League of Legends</h1><p>Edita redes y cuentas sin perder campeones, partidas ni estadísticas actuales.</p></div>
+      <div class="toolbar">
+        <button class="secondary-btn" id="editProfileBtn" type="button"><i class="ti ti-pencil"></i> Editar perfil</button>
+        <button class="secondary-btn" id="resetBtn" type="button"><i class="ti ti-refresh"></i> Reiniciar demo</button>
+        <button class="primary-btn" id="saveBtn" type="button"><i class="ti ti-device-floppy"></i> Guardar</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="chead"><div class="chead-left"><span class="cdot"></span>Mis cuentas</div><button class="mini-btn" id="addAccountTopBtn" type="button"><i class="ti ti-plus"></i> Nueva</button></div>
+      <div class="account-list" id="accountList"></div>
+      <button class="add-acc-btn" id="addAccountBtn" type="button"><i class="ti ti-plus"></i> Agregar cuenta — elige servidor (LAS, LAN, NA, EUW...)</button>
+    </section>
+
+    <div class="two-col">
+      <section class="card">
+        <div class="chead"><div class="chead-left"><span class="cdot"></span>Campeones más jugados</div><button class="mini-btn" id="syncPanelsBtn" type="button"><i class="ti ti-refresh"></i> Actualizar</button></div>
+        <div id="champList"></div>
+      </section>
+      <section class="card">
+        <div class="chead"><div class="chead-left"><span class="cdot"></span>Últimas partidas</div><span class="sync-note" id="livePanelStatus"></span></div>
+        <div id="matchList"></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div class="modal" id="socialModal" role="dialog" aria-modal="true">
+  <div class="modal-card"><div class="modal-head"><div class="modal-title" id="socialModalTitle">Red social</div><button class="icon-btn close-modal" type="button"><i class="ti ti-x"></i></button></div>
+    <form class="modal-body" id="socialForm">
+      <p class="help-text">Pega únicamente el link. La página detecta automáticamente si es X/Twitter, Twitch, Instagram, YouTube, TikTok, Discord, Fandom u otra web y muestra su icono.</p>
+      <div class="field"><label>Link de la red social</label><input id="socialUrl" placeholder="https://x.com/lolnanku"></div>
+    </form>
+    <div class="modal-foot"><button class="danger-btn" id="deleteSocialBtn" type="button">Eliminar</button><button class="secondary-btn close-modal" type="button">Cancelar</button><button class="primary-btn" id="saveSocialBtn" type="button">Guardar red</button></div>
+  </div>
+</div>
+
+<div class="modal" id="accountModal" role="dialog" aria-modal="true">
+  <div class="modal-card"><div class="modal-head"><div class="modal-title" id="accountModalTitle">Cuenta</div><button class="icon-btn close-modal" type="button"><i class="ti ti-x"></i></button></div>
+    <form class="modal-body" id="accountForm">
+      <p class="help-text">Agrega la cuenta por Riot ID. Se guarda al instante y queda enlazada a OP.GG. La lectura automática desde un HTML local depende de que OP.GG o el proxy permitan CORS; si se bloquea, la tarjeta igual abre la cuenta real y puedes volver a sincronizar.</p>
+      <div class="form-grid">
+        <div class="field"><label>Nombre + tag</label><input id="accName" placeholder="Nanku#Gap"></div>
+        <div class="field"><label>Servidor</label><select id="accServer"><option>LAS</option><option>LAN</option><option>NA</option><option>EUW</option><option>EUNE</option><option>BR</option><option>KR</option><option>JP</option></select></div>
+      </div>
+      <div class="opgg-actions"><button class="secondary-btn" id="previewOpggBtn" type="button"><i class="ti ti-external-link"></i> Abrir OP.GG</button><span class="sync-note" id="opggStatus"></span></div>
+    </form>
+    <div class="modal-foot"><button class="danger-btn" id="deleteAccountBtn" type="button">Eliminar</button><button class="secondary-btn close-modal" type="button">Cancelar</button><button class="primary-btn" id="saveAccountBtn" type="button">Guardar cuenta</button></div>
+  </div>
+</div>
+
+<div class="modal" id="profileModal" role="dialog" aria-modal="true">
+  <div class="modal-card"><div class="modal-head"><div class="modal-title">Editar perfil</div><button class="icon-btn close-modal" type="button"><i class="ti ti-x"></i></button></div>
+    <form class="modal-body"><div class="field"><label>Nombre visible</label><input id="profileNameInput" placeholder="Nanku"></div></form>
+    <div class="modal-foot"><button class="secondary-btn close-modal" type="button">Cancelar</button><button class="primary-btn" id="saveProfileBtn" type="button">Guardar perfil</button></div>
+  </div>
+</div>
+<div class="toast" id="toast">Guardado</div>
+
+<script>
+const STORAGE_KEY='lol-profile-v9-opgg-fixed';
+const initialData={
+  profile:{name:'Nanku',avatar:''},
+  socials:[
+    {url:'https://x.com/nanku'},
+    {url:'https://twitch.tv/nanku_lol'},
+    {url:'https://instagram.com/nanku'},
+    {url:'https://lol.fandom.com/'}
+  ],
+  accounts:[
+    {name:'Nanku#Gap',server:'LAS',tier:'Unranked',division:'',lp:0,wins:0,losses:0,mmr:0,source:'opgg',champions:[],matches:[]},
+    {name:'Sky#Nanku',server:'LAS',tier:'Unranked',division:'',lp:0,wins:0,losses:0,mmr:0,source:'opgg',champions:[],matches:[]},
+    {name:'N ʍ#LAN1',server:'LAS',tier:'Unranked',division:'',lp:0,wins:0,losses:0,mmr:0,source:'opgg',champions:[],matches:[]}
+  ]
+};
+let data=loadData();let editingSocial=null;let editingAccount=null;
+const $=s=>document.querySelector(s);
+function loadData(){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));return saved||structuredClone(initialData)}catch{return structuredClone(initialData)}}
+function persist(){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));showToast('Cambios guardados en este navegador');}
+function showToast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+function tierColor(t){return {Unranked:'#676575',Iron:'#6d7480',Bronze:'#CD7F32',Silver:'#9EA3B5',Gold:'#C89B3C',Platinum:'#5ee7c7',Emerald:'#28c878',Diamond:'#63c7ff',Master:'#b46cff',Grandmaster:'#e24b4a',Challenger:'#f1d77e'}[t]||'#C89B3C'}
+function medal(t){
+  const tier=String(t||'unranked').toLowerCase().replace(/\s+/g,'');
+  // Emblemas de rango usando recursos públicos de League/CommunityDragon; fallback visual si no carga.
+  return `https://raw.communitydragon.org/latest/plugins/rcp-fe-lol-shared-components/global/default/images/${tier}.png`
+}
+function rankFallback(t){
+  const tier=String(t||'').toLowerCase();
+  const m={challenger:'C',grandmaster:'GM',master:'M',diamond:'D',emerald:'E',platinum:'P',gold:'G',silver:'S',bronze:'B',iron:'I',unranked:'—'};
+  return m[tier]||'🏅';
+}
+function wr(a){const total=(+a.wins||0)+(+a.losses||0);return total?Math.round((+a.wins||0)/total*100):0}
+function cleanUrl(url){url=(url||'').trim();if(!url)return '';if(!/^https?:\/\//i.test(url))url='https://'+url;return url}
+function socialInfo(url){url=cleanUrl(url);let host='',path='';try{const u=new URL(url);host=u.hostname.replace(/^www\./,'').toLowerCase();path=u.pathname.replace(/^\//,'')}catch{}
+  const first=(path.split('/').filter(Boolean)[0]||host||'link').replace('@','');
+  if(host.includes('twitter.com')||host.includes('x.com'))return {platform:'X / Twitter',handle:first?'@'+first:'',bg:'#000',icon:'<svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.261 5.632L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>'};
+  if(host.includes('twitch.tv'))return {platform:'Twitch',handle:first,bg:'#9146FF',icon:'<i class="ti ti-brand-twitch"></i>'};
+  if(host.includes('instagram.com'))return {platform:'Instagram',handle:first?'@'+first:'',bg:'radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%)',icon:'<i class="ti ti-brand-instagram"></i>'};
+  if(host.includes('youtube.com')||host.includes('youtu.be'))return {platform:'YouTube',handle:first,bg:'#ff0033',icon:'<i class="ti ti-brand-youtube"></i>'};
+  if(host.includes('tiktok.com'))return {platform:'TikTok',handle:first,bg:'#111',icon:'<i class="ti ti-brand-tiktok"></i>'};
+  if(host.includes('discord.'))return {platform:'Discord',handle:first,bg:'#5865F2',icon:'<i class="ti ti-brand-discord"></i>'};
+  if(host.includes('lol.fandom.com')||host.includes('fandom.com'))return {platform:'LoL Fandom',handle:'',bg:'#00D4AA',icon:'<b style="font-size:14px;color:#003">W</b>'};
+  return {platform:host||'Link',handle:first,bg:'#2A2F3E',icon:'<i class="ti ti-link"></i>'};
+}
+function regionSlug(server){return {LAS:'las',LAN:'lan',NA:'na',EUW:'euw',EUNE:'eune',BR:'br',KR:'kr',JP:'jp'}[server]||String(server||'las').toLowerCase()}
+function splitRiotId(v){const [name,tag='']=String(v||'').split('#');return {name:name.trim(),tag:tag.trim()}}
+function opggUrl(a){const id=splitRiotId(a.name);const riot=id.tag?`${id.name}-${id.tag}`:id.name;return `https://www.op.gg/summoners/${regionSlug(a.server)}/${encodeURIComponent(riot)}`}
+function fetchWithTimeout(url, options={}, ms=5500){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),ms);
+  return fetch(url,{...options,signal:controller.signal}).finally(()=>clearTimeout(timer));
+}
+function applyOpggText(account, html){
+  const decoded=html.replace(/&quot;/g,'\"').replace(/&#x27;/g,"'").replace(/&amp;/g,'&');
+  const txt=decoded.replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ');
+  const tierMatch=decoded.match(/\b(Iron|Bronze|Silver|Gold|Platinum|Emerald|Diamond|Master|Grandmaster|Challenger)\b/i);
+  const tier=tierMatch&&tierMatch[1];
+  const div=(decoded.match(/\bdivision\b[^IVX]{0,40}\b(I|II|III|IV)\b/i)||txt.match(/\b(?:Ranked Solo|Solo\/Duo)[^A-Z]*(I|II|III|IV)\b/i)||[])[1];
+  const lp=(txt.match(/(\d{1,4})\s*LP/i)||decoded.match(/\blp\b[^0-9]{0,20}(\d{1,4})/i)||[])[1];
+  const wl=txt.match(/(\d+)W\s*(\d+)L/i)||decoded.match(/wins[^0-9]{0,20}(\d+)[^a-z0-9]{0,80}losses[^0-9]{0,20}(\d+)/i);
+  if(tier){account.tier=tier[0].toUpperCase()+tier.slice(1).toLowerCase(); account.division=div||account.division||''; account.lp=Number(lp||account.lp||0)}
+  if(wl){account.wins=Number(wl[1]||0);account.losses=Number(wl[2]||0)}
+  account.syncOk=!!tier;
+  return !!tier;
+}
+
+function championIcon(name){
+  const key=String(name||'').replace(/[^a-z0-9]/gi,'');
+  return `https://ddragon.leagueoflegends.com/cdn/14.11.1/img/champion/${key}.png`;
+}
+function extractPanelData(account, html){
+  // OP.GG cambia su marcado seguido; este parser usa el texto visible y solo rellena si encuentra datos reales.
+  const decoded=html.replace(/&quot;/g,'\"').replace(/&#x27;/g,"'").replace(/&amp;/g,'&');
+  const plain=decoded.replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ');
+  const champNames=['Aatrox','Ahri','Akali','Akshan','Alistar','Ambessa','Amumu','Anivia','Annie','Aphelios','Ashe','AurelionSol','Azir','Bard','Belveth','Blitzcrank','Brand','Braum','Briar','Caitlyn','Camille','Cassiopeia','Chogath','Corki','Darius','Diana','Draven','DrMundo','Ekko','Elise','Evelynn','Ezreal','Fiddlesticks','Fiora','Fizz','Galio','Gangplank','Garen','Gnar','Gragas','Graves','Gwen','Hecarim','Heimerdinger','Hwei','Illaoi','Irelia','Ivern','Janna','JarvanIV','Jax','Jayce','Jhin','Jinx','Kaisa','Kalista','Karma','Karthus','Kassadin','Katarina','Kayle','Kayn','Kennen','Khazix','Kindred','Kled','KogMaw','KSante','Leblanc','LeeSin','Leona','Lillia','Lissandra','Lucian','Lulu','Lux','Malphite','Malzahar','Maokai','MasterYi','Milio','MissFortune','Mordekaiser','Morgana','Naafiri','Nami','Nasus','Nautilus','Neeko','Nidalee','Nilah','Nocturne','Nunu','Olaf','Orianna','Ornn','Pantheon','Poppy','Pyke','Qiyana','Quinn','Rakan','Rammus','RekSai','Rell','Renata','Renekton','Rengar','Riven','Rumble','Ryze','Samira','Sejuani','Senna','Seraphine','Sett','Shaco','Shen','Shyvana','Singed','Sion','Sivir','Skarner','Smolder','Sona','Soraka','Swain','Sylas','Syndra','TahmKench','Taliyah','Talon','Taric','Teemo','Thresh','Tristana','Trundle','Tryndamere','TwistedFate','Twitch','Udyr','Urgot','Varus','Vayne','Veigar','Velkoz','Vex','Vi','Viego','Viktor','Vladimir','Volibear','Warwick','Wukong','Xayah','Xerath','XinZhao','Yasuo','Yone','Yorick','Yuumi','Zac','Zed','Zeri','Ziggs','Zilean','Zoe','Zyra'];
+  const found=[];
+  for(const n of champNames){
+    const spaced=n.replace(/([a-z])([A-Z])/g,'$1 $2').replace(/([A-Z])([A-Z][a-z])/g,'$1 $2');
+    const safe=spaced.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/\s+/g,'\\s*');
+    const re=new RegExp('\\b'+safe+'\\b[^%]{0,180}(\\d{1,3})%[^0-9]{0,60}(\\d{1,4})','i');
+    const m=plain.match(re);
+    if(m && !found.find(x=>x.name===n)) found.push({name:n,wr:Math.min(100,Number(m[1])),games:Number(m[2])});
+    if(found.length>=5)break;
+  }
+  if(found.length) account.champions=found.slice(0,3);
+  const kdaMatches=[...plain.matchAll(/\b([A-Z][a-zA-Z' ]{2,15})\b[^0-9]{0,80}(\d{1,2})\s*\/\s*(\d{1,2})\s*\/\s*(\d{1,2})/g)].slice(0,5);
+  const matches=[];
+  for(const m of kdaMatches){
+    const name=m[1].trim().replace(/ /g,'');
+    if(champNames.some(c=>c.toLowerCase()===name.toLowerCase())) matches.push({champ:name,k:Number(m[2]),d:Number(m[3]),a:Number(m[4]),result:Number(m[2])+Number(m[4])>=Number(m[3])*2?'win':'loss'});
+    if(matches.length>=3)break;
+  }
+  if(matches.length) account.matches=matches;
+}
+async function syncFromOpgg(account){
+  account.opgg=opggUrl(account); account.source='opgg'; account.lastSync=new Date().toISOString();
+  const target=account.opgg;
+  const urls=[
+    target,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(target)}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(target)}`,
+    `https://r.jina.ai/http://r.jina.ai/http://https://${target.replace(/^https?:\/\//,'')}`
+  ];
+  for(const url of urls){
+    try{
+      const res=await fetchWithTimeout(url,{cache:'no-store'},7000);
+      if(!res.ok)continue;
+      const html=await res.text();
+      const ok=applyOpggText(account, html);
+      extractPanelData(account, html);
+      if(ok)return account;
+    }catch(err){}
+  }
+  account.syncOk=false;
+  return account;
+}
+function renderLivePanels(){
+  const acct=data.accounts.find(a=>a.syncOk)||data.accounts[0];
+  const champList=$('#champList'), matchList=$('#matchList'), status=$('#livePanelStatus');
+  if(!acct){champList.innerHTML='<div class="empty-live">Agrega una cuenta para consultar datos públicos.</div>';matchList.innerHTML='<div class="empty-live">Sin cuenta seleccionada.</div>';return}
+  status.textContent=acct.lastSync?'Última sincronización: '+new Date(acct.lastSync).toLocaleString():'Pendiente de actualizar';
+  const champs=acct.champions||[];
+  champList.innerHTML=champs.length?champs.map(c=>`<div class="champ-row"><div class="cicon"><img src="${championIcon(c.name)}" alt="${c.name}" onerror="this.parentNode.textContent='${String(c.name).slice(0,3).toUpperCase()}'"></div><div style="flex:1"><div class="cname">${c.name}</div><div class="cbar-wrap"><div class="cbar-fill" style="width:${Math.max(3,Math.min(100,c.wr||0))}%"></div></div></div><div class="cwr" style="color:${(c.wr||0)>=50?'var(--win)':'var(--loss)'}">${c.wr||0}%<div style="font-size:10px;color:var(--text3)">${c.games||0} games</div></div></div>`).join(''):`<div class="empty-live"><b>Sin datos en caché.</b><br>Presiona “Actualizar” para intentar leer OP.GG. Si OP.GG bloquea el HTML local, esta sección no mostrará datos falsos.</div>`;
+  const matches=acct.matches||[];
+  matchList.innerHTML=matches.length?matches.map(m=>{const win=m.result==='win';const kda=((m.k+m.a)/Math.max(1,m.d)).toFixed(1);return `<div class="grow"><div class="gbar" style="background:${win?'var(--win)':'var(--loss)'}"></div><div class="gicon"><img src="${championIcon(m.champ)}" alt="${m.champ}"></div><div style="flex:1"><div class="gchamp">${m.champ}</div><div class="gmeta">${acct.name} · OP.GG</div></div><div class="gkda" style="color:${win?'var(--win)':'var(--loss)'}">${m.k}/${m.d}/${m.a}<div style="font-size:10px;color:var(--text3)">${kda} KDA</div></div></div>`}).join(''):`<div class="empty-live"><b>Últimas partidas no cargadas.</b><br>OP.GG suele bloquear lectura desde archivos HTML. La cuenta sí abre en OP.GG para ver datos reales.</div>`;
+}
+function render(){
+  $('#profileName').textContent=data.profile.name||'Nanku';
+  const av=$('#avatarBox'), img=$('#avatarImg');
+  if(data.profile.avatar){img.src=data.profile.avatar;av.classList.add('has-image')}else{img.removeAttribute('src');av.classList.remove('has-image')}
+  $('#socialList').innerHTML=data.socials.map((s,i)=>{const info=socialInfo(s.url), url=cleanUrl(s.url)||'#';const handle=info.handle||new URL(url).hostname.replace(/^www\./,'');return `<div class="social-row" data-social="${i}" data-url="${url}" title="Abrir ${info.platform}"><a class="social-open" href="${url}" target="_blank" rel="noopener" aria-label="Abrir ${info.platform}"><div class="slogo" style="background:${info.bg}">${info.icon}</div><div class="social-text"><span class="sname">${info.platform}</span><span class="shandle">${handle}</span></div></a><div class="social-actions"><button class="icon-btn edit-social" data-index="${i}" type="button" title="Editar red"><i class="ti ti-pencil"></i></button><button class="icon-btn delete-social-mini" data-index="${i}" type="button" title="Eliminar red"><i class="ti ti-trash"></i></button></div></div>`}).join('');
+  const tiers=['Unranked','Iron','Bronze','Silver','Gold','Platinum','Emerald','Diamond','Master','Grandmaster','Challenger'];
+  const best=data.accounts.reduce((best,a,i)=>{const score=(+a.mmr||0)+(tiers.indexOf(a.tier)*1000)+(+a.lp||0);return score>best.score?{i,score}:best},{i:-1,score:-1}).i;
+  renderLivePanels();
+  $('#accountList').innerHTML=data.accounts.map((a,i)=>{const color=tierColor(a.tier), winrate=wr(a), link=opggUrl(a), status=a.syncOk===false?'OP.GG bloqueó lectura automática':'Datos públicos OP.GG';return `<div class="acc-row" data-account="${i}" onclick="if(!event.target.closest('button,a')) window.open('${link}','_blank','noopener')"><img class="rank-img" src="${medal(a.tier)}" alt="${a.tier||'Rango'}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="rank-img-ph" style="display:none;border-color:${color};background:${color}18">${rankFallback(a.tier)}</div><div class="ainfo"><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span class="aname">${a.name}</span><span class="server-tag">${a.server}</span><a class="opgg-link" href="${link}" target="_blank" rel="noopener">Abrir cuenta</a></div><div class="arank" style="color:${color}">${a.tier||'Unranked'} ${a.division||''} — ${a.lp||0} LP</div><div class="apills"><span class="pill pw">✓ ${a.wins||0}W</span><span class="pill pl">✗ ${a.losses||0}L</span><span class="pill pm">${status}</span><span class="pill pn">${winrate}% WR</span></div></div>${i===best?'<span class="top-b">⭐ Mayor elo</span>':''}<div class="row-actions"><button class="icon-btn sync-account" data-index="${i}" type="button" title="Actualizar desde OP.GG"><i class="ti ti-refresh"></i></button><button class="icon-btn edit-account" data-index="${i}" type="button" title="Editar"><i class="ti ti-pencil"></i></button><button class="icon-btn delete-account-mini" data-index="${i}" type="button" title="Eliminar"><i class="ti ti-trash"></i></button></div></div>`}).join('');
+}
+function openModal(id){$(id).classList.add('show')}function closeModals(){document.querySelectorAll('.modal').forEach(m=>m.classList.remove('show'))}
+function editSocial(i=null){editingSocial=i;$('#socialModalTitle').textContent=i===null?'Agregar red social':'Modificar red social';$('#deleteSocialBtn').style.display=i===null?'none':'block';const s=i===null?{url:''}:data.socials[i];$('#socialUrl').value=s.url||'';openModal('#socialModal')}
+function editAccount(i=null){editingAccount=i;$('#accountModalTitle').textContent=i===null?'Agregar cuenta desde OP.GG':'Modificar cuenta de OP.GG';$('#deleteAccountBtn').style.display=i===null?'none':'block';const a=i===null?{name:'',server:'LAS'}:data.accounts[i];$('#accName').value=a.name;$('#accServer').value=a.server;$('#opggStatus').textContent='';openModal('#accountModal')}
+document.addEventListener('click',async e=>{
+  if(e.target.closest('.close-modal')||e.target.classList.contains('modal'))closeModals();
+  const es=e.target.closest('.edit-social');if(es){e.preventDefault();e.stopPropagation();editSocial(+es.dataset.index);return}
+  const ds=e.target.closest('.delete-social-mini');if(ds){e.preventDefault();e.stopPropagation();data.socials.splice(+ds.dataset.index,1);persist();render();return}
+  const sr=e.target.closest('.social-row');if(sr&&!e.target.closest('button,a')){window.open(sr.dataset.url,'_blank','noopener');return}
+  const ea=e.target.closest('.edit-account');if(ea){e.preventDefault();e.stopPropagation();editAccount(+ea.dataset.index);return}
+  const da=e.target.closest('.delete-account-mini');if(da){e.preventDefault();e.stopPropagation();data.accounts.splice(+da.dataset.index,1);persist();render();return}
+  const sa=e.target.closest('.sync-account');if(sa){e.preventDefault();e.stopPropagation();const i=+sa.dataset.index;sa.disabled=true;showToast('Actualizando desde OP.GG...');await syncFromOpgg(data.accounts[i]);persist();render();showToast(data.accounts[i].syncOk?'Datos actualizados desde OP.GG':'Cuenta guardada; OP.GG bloqueó la lectura directa')}
+});
+$('#addSocialBtn').onclick=()=>editSocial();
+$('#saveSocialBtn').onclick=()=>{const item={url:cleanUrl($('#socialUrl').value)};if(!item.url){showToast('Agrega un link válido');return}if(editingSocial===null)data.socials.push(item);else data.socials[editingSocial]=item;persist();render();closeModals()};
+$('#deleteSocialBtn').onclick=()=>{if(editingSocial!==null)data.socials.splice(editingSocial,1);persist();render();closeModals()};
+$('#addAccountBtn').onclick=$('#addAccountTopBtn').onclick=()=>editAccount();
+$('#previewOpggBtn').onclick=()=>{const item={name:$('#accName').value.trim(),server:$('#accServer').value}; if(!item.name.includes('#')){showToast('Usa formato Nombre#TAG');return} window.open(opggUrl(item),'_blank','noopener')};
+$('#saveAccountBtn').onclick=async()=>{let item={name:$('#accName').value.trim(),server:$('#accServer').value,tier:'Unranked',division:'',lp:0,wins:0,losses:0,mmr:0,source:'opgg'};if(!item.name.includes('#')){showToast('Usa formato Nombre#TAG');return}$('#saveAccountBtn').disabled=true;$('#opggStatus').textContent='Guardando y sincronizando OP.GG...';try{item=await syncFromOpgg(item)}catch(err){item.syncOk=false;item.opgg=opggUrl(item)}finally{$('#saveAccountBtn').disabled=false}if(editingAccount!==null){item={...data.accounts[editingAccount],...item};data.accounts[editingAccount]=item}else{data.accounts.push(item)}persist();render();closeModals();showToast(item.syncOk?'Cuenta guardada y actualizada':'Cuenta guardada; OP.GG bloqueó lectura directa')};
+$('#deleteAccountBtn').onclick=()=>{if(editingAccount!==null)data.accounts.splice(editingAccount,1);persist();render();closeModals()};
+$('#editProfileBtn').onclick=()=>{$('#profileNameInput').value=data.profile.name;openModal('#profileModal')};
+$('#saveProfileBtn').onclick=()=>{data.profile.name=$('#profileNameInput').value.trim()||'Nanku';persist();render();closeModals()};
+$('#avatarInput').onchange=e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(!file.type.startsWith('image/')){showToast('Elige una imagen válida');return}const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{const max=512;const scale=Math.min(1,max/img.width,max/img.height);const c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);const ctx=c.getContext('2d');ctx.drawImage(img,0,0,c.width,c.height);data.profile.avatar=c.toDataURL('image/jpeg',0.9);persist();render();showToast('Imagen actualizada')};img.onerror=()=>showToast('No se pudo cargar la imagen');img.src=reader.result};reader.readAsDataURL(file);e.target.value=''};
+$('#saveBtn').onclick=()=>persist();
+$('#resetBtn').onclick=()=>{if(confirm('¿Reiniciar datos de prueba?')){localStorage.removeItem(STORAGE_KEY);data=structuredClone(initialData);render();showToast('Demo reiniciada')}};
+render();
+</script>
+</body>
+</html>
